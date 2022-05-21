@@ -1,4 +1,6 @@
+import mongoose from 'mongoose';
 import admin from 'firebase-admin';
+import moment from 'moment';
 import { User, UserRepo } from '../users';
 
 export class AuthService {
@@ -19,6 +21,8 @@ export class AuthService {
       if (existedUser.firebaseId !== verifyIdToken.uid) {
         return this.userRepo.update(existedUser._id, {
           firebaseId: verifyIdToken.uid,
+          updatedBy: existedUser._id,
+          updatedAt: moment().valueOf(),
         });
       }
       return existedUser;
@@ -26,10 +30,16 @@ export class AuthService {
 
     // New user => Create user record in mongo
     const firebaseInfo = await admin.auth().getUser(verifyIdToken.uid);
+    const userId = new mongoose.Types.ObjectId().toHexString();
     return this.userRepo.create({
+      _id: userId,
       fullName: firebaseInfo.displayName,
       email: verifyIdToken.email,
       firebaseId: verifyIdToken.uid,
+      createdBy: userId,
+      createdAt: moment().valueOf(),
+      updatedBy: userId,
+      updatedAt: moment().valueOf(),
     });
   }
 }

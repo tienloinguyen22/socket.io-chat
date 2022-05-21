@@ -1,3 +1,5 @@
+import { User } from '../users';
+
 export type TimestampInMilliseconds = number;
 
 export interface IsAuditable {
@@ -5,4 +7,8 @@ export interface IsAuditable {
   createdAt?: TimestampInMilliseconds;
   updatedBy?: string;
   updatedAt?: TimestampInMilliseconds;
+}
+
+export interface Context {
+  user?: User;
 }

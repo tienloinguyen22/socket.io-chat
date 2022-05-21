@@ -2,7 +2,8 @@ import dotenv from 'dotenv';
 
 export type Configs = {
   port: number;
-  databaseURL: string;
+  mongoURL: string;
+  redisURL: string;
   firebase: {
     projectId: string;
     clientEmail: string;
@@ -19,7 +20,8 @@ export const initializeConfigs = (): Configs => {
 
   return {
     port: parseInt(process.env.PORT || '3000', 10),
-    databaseURL: process.env.MONGODB_URL || '',
+    mongoURL: process.env.MONGODB_URL || '',
+    redisURL: process.env.REDIS_URL || '',
     firebase: {
       projectId: process.env.FIREBASE_PROJECT_ID,
       clientEmail: process.env.FIREBASE_CLIENT_EMAIL,

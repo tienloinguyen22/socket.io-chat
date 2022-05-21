@@ -8,5 +8,13 @@ services:
     command: '--bind_ip_all'
     ports:
       - 27017:27017
+  socketio-chat-redis:
+    container_name: socketio-chat-redis
+    image: redis:latest
+    volumes:
+      - socketio-chat-redis-data:/data/redis
+    ports:
+      - 6379:6379
 volumes:
   socketio-chat-mongo-data:
+  socketio-chat-redis-data:

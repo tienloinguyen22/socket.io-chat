@@ -38,6 +38,10 @@ export class UserRepo {
     return this.model.findOne({ email });
   }
 
+  public async findByFirebaseId(firebaseId: string): Promise<User | null> {
+    return this.model.findOne({ firebaseId });
+  }
+
   public async create(payload: Partial<User>): Promise<User> {
     const result = await this.model.create(payload);
     return result.toObject();
