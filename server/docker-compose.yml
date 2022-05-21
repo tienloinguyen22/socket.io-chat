@@ -1,0 +1,12 @@
+version: '3'
+services:
+  socketio-chat-mongo:
+    container_name: socketio-chat-mongo
+    image: mongo:4.4.3
+    volumes:
+      - socketio-chat-mongo-data:/data/db
+    command: '--bind_ip_all'
+    ports:
+      - 27017:27017
+volumes:
+  socketio-chat-mongo-data:
