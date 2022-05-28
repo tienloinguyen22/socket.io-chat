@@ -16,9 +16,7 @@ export class MessageController {
   ): void {
     router.post("/messages", verifyToken(firebase, redis, userRepo), authenticate(), async (req, res) => {
       try {
-        const result = await MessageService.send({
-          user: (req as any).user,
-        }, req.body);
+        const result = await MessageService.send((req as any).ctx, req.body);
         res.status(StatusCodes.OK).json(result);
       } catch (error) {
         console.log('Error: ', error);

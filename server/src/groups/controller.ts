@@ -16,9 +16,7 @@ export class GroupController {
   ): void {
     router.post("/groups", verifyToken(firebase, redis, userRepo), authenticate(), async (req, res) => {
       try {
-        const result = await groupService.create({
-          user: (req as any).user,
-        }, req.body);
+        const result = await groupService.create((req as any).ctx, req.body);
         res.status(StatusCodes.OK).json(result);
       } catch (error) {
         console.log('Error: ', error);
@@ -30,9 +28,7 @@ export class GroupController {
 
     router.put("/groups/:id", verifyToken(firebase, redis, userRepo), authenticate(), async (req, res) => {
       try {
-        const result = await groupService.update({
-          user: (req as any).user,
-        }, req.params.id, req.body);
+        const result = await groupService.update((req as any).ctx, req.params.id, req.body);
         res.status(StatusCodes.OK).json(result);
       } catch (error) {
         console.log('Error: ', error);
@@ -44,9 +40,7 @@ export class GroupController {
 
     router.put("/groups/:id/add-members", verifyToken(firebase, redis, userRepo), authenticate(), async (req, res) => {
       try {
-        const result = await groupService.addMembers({
-          user: (req as any).user,
-        }, req.params.id, req.body);
+        const result = await groupService.addMembers((req as any).ctx, req.params.id, req.body);
         res.status(StatusCodes.OK).json(result);
       } catch (error) {
         console.log('Error: ', error);
@@ -58,9 +52,7 @@ export class GroupController {
 
     router.put("/groups/:id/remove-members", verifyToken(firebase, redis, userRepo), authenticate(), async (req, res) => {
       try {
-        const result = await groupService.removeMembers({
-          user: (req as any).user,
-        }, req.params.id, req.body);
+        const result = await groupService.removeMembers((req as any).ctx, req.params.id, req.body);
         res.status(StatusCodes.OK).json(result);
       } catch (error) {
         console.log('Error: ', error);

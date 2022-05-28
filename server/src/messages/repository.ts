@@ -32,7 +32,7 @@ export class MessageRepo {
   }
 
   public async findById(id: string): Promise<Message | null> {
-    return this.model.findById(id);
+    return this.model.findById(id).lean();
   }
 
   public async create(payload: Partial<Message>): Promise<Message> {

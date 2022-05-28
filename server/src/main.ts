@@ -1,6 +1,5 @@
 import express from "express";
 import { createServer } from "http";
-import { Server } from "socket.io";
 import { AuthController, AuthService } from './auth';
 import { initializeConfigs } from './configs';
 import { initializeFirebase } from './firebase';
@@ -8,12 +7,12 @@ import { GroupController, GroupRepo, GroupService } from './groups';
 import { MessageController, MessageRepo, MessageService } from './messages';
 import { connectMongo } from './mongoose';
 import { initializeRedis } from './redis';
+import { initializeSocket } from './socket';
 import { UserRepo } from './users';
 
 (async () => {
   const app = express();
   const httpServer = createServer(app);
-  const io = new Server(httpServer);
 
   // Configs
   const configs = initializeConfigs();
@@ -45,9 +44,14 @@ import { UserRepo } from './users';
   GroupController.register(app, groupService, firebase, redis, userRepo);
   MessageController.register(app, messageService, firebase, redis, userRepo);
 
-
+  // Socket
+  const io = initializeSocket(configs, httpServer, redis, firebase, userRepo);
   io.on("connection", (socket) => {
     console.log(`New connection. Socket ID: ${socket.id}`);
+
+    // Joins all rooms
+
+    // Handle events
   });
 
   httpServer.listen(configs.port, () => {

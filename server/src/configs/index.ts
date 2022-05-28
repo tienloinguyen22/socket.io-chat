@@ -9,6 +9,9 @@ export type Configs = {
     clientEmail: string;
     privateKey: string;
   },
+  socket: {
+    maxConnections: number;
+  },
 }
 
 export const initializeConfigs = (): Configs => {
@@ -26,6 +29,9 @@ export const initializeConfigs = (): Configs => {
       projectId: process.env.FIREBASE_PROJECT_ID,
       clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
       privateKey: process.env.FIREBASE_PRIVATE_KEY,
+    },
+    socket: {
+      maxConnections: parseInt(process.env.SOCKET_MAX_CONNECTIONS || '5000', 10),
     },
   };
 };

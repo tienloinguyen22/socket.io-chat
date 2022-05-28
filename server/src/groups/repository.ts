@@ -23,7 +23,11 @@ export class GroupRepo {
   }
 
   public async findById(id: string): Promise<Group | null> {
-    return this.model.findById(id);
+    return this.model.findById(id).lean();
+  }
+
+  public async findAllByMemberId(memberId: string): Promise<Group[]> {
+    return this.model.find({ members: memberId }).lean();
   }
 
   public async create(payload: Partial<Group>): Promise<Group> {
@@ -32,8 +36,8 @@ export class GroupRepo {
   }
 
   public async update(id: string, payload: Partial<Group>): Promise<Group> {
-   return this.model
-    .findByIdAndUpdate(id, { $set: payload }, { new: true })
-    .lean();
+    return this.model
+      .findByIdAndUpdate(id, { $set: payload }, { new: true })
+      .lean();
   }
 }

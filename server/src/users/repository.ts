@@ -31,15 +31,15 @@ export class UserRepo {
   }
 
   public async findById(id: string): Promise<User | null> {
-    return this.model.findById(id);
+    return this.model.findById(id).lean();
   }
 
   public async findByEmail(email: string): Promise<User | null> {
-    return this.model.findOne({ email });
+    return this.model.findOne({ email }).lean();
   }
 
   public async findByFirebaseId(firebaseId: string): Promise<User | null> {
-    return this.model.findOne({ firebaseId });
+    return this.model.findOne({ firebaseId }).lean();
   }
 
   public async create(payload: Partial<User>): Promise<User> {

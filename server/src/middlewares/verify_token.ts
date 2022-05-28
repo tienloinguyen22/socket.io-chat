@@ -11,13 +11,17 @@ export const verifyToken = (firebase: admin.app.App, redis: Redis, userRepo: Use
         const token = bearerToken.replace('Bearer ', '');
         const cached = await redis.get(token);
         if (cached) {
-          (req as any).user = JSON.parse(cached);
+          (req as any).ctx = {
+            user: JSON.parse(cached),
+          };
         } else {
           const verifyIdToken = await firebase.auth().verifyIdToken(token);
           const user = await userRepo.findByFirebaseId(verifyIdToken.uid);
           await redis.set(token, JSON.stringify(user));
           await redis.expire(token, 3600); // 3600s
-          (req as any).user = user;
+          (req as any).ctx = {
+            user,
+          };
         }
       }
       next();
