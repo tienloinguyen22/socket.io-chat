@@ -8,6 +8,7 @@
 }
 
 .loading {
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -20,6 +21,6 @@
 
 @media (prefers-reduced-motion: no-preference) {
   .loading-img {
-    animation: App-logo-spin infinite 5s linear;
+    animation: App-logo-spin infinite 2s linear;
   }
 }

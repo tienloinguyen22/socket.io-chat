@@ -1,28 +1,43 @@
 import { useEffect, useState } from 'react'
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged, User } from 'firebase/auth';
 import { initializeFirebase } from './firebase'
-import './App.css'
 import { Loading } from './loading';
+import { useNavigate, Routes, Route } from "react-router-dom";
+import { Auth } from './auth';
+import { Chat } from './chat';
 
 export function App() {
   const { auth } = initializeFirebase();
+  const navigate = useNavigate();
   const [initialized, setInitialized] = useState<boolean>(false);
+  const [currentUser, setCurrentUser] = useState<User | undefined>(undefined);
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
-      setInitialized(false);
+      setInitialized(true);
 
       if (user) {
-        // Do sth
+        setCurrentUser(user);
+        navigate('/chat');
       } else {
-        // User is signed out
+        navigate('/auth');
       }
     });
   }, []);
 
   return (
-    <div className="initializing">
+    <>{initialized ? (
+      <Routes>
+        <Route path="/auth" element={<Auth />} />
+        <Route path="/chat" element={<Chat />} />
+        <Route path="*" element={
+          <div>
+            Not Found
+          </div>
+        } />
+      </Routes>
+    ) : (
       <Loading />
-    </div>
+    )}</>
   );
 }
