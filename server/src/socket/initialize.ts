@@ -3,7 +3,7 @@ import { Server } from 'socket.io';
 import { createAdapter } from '@socket.io/redis-adapter';
 import admin from 'firebase-admin';
 import { Configs } from '../configs';
-import Redis, { Cluster } from 'ioredis';
+import Redis from 'ioredis';
 import { User, UserRepo } from '../users';
 import { StatusCodes } from 'http-status-codes';
 
@@ -71,7 +71,7 @@ export const initializeSocket = (configs: Configs, httpServer: HttpServer, redis
     next()
   });
 
-  const pubClient = new Cluster([configs.redisURL]);
+  const pubClient = redis;
   const subClient = pubClient.duplicate();
   const redisAdapter = createAdapter(pubClient, subClient);
   io.adapter(redisAdapter);

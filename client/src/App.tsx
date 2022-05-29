@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react'
 import { onAuthStateChanged, User } from 'firebase/auth';
-import { initializeFirebase } from './firebase'
 import { Loading } from './loading';
-import { useNavigate, Routes, Route } from "react-router-dom";
+import { useNavigate, Routes, Route } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
 import { Auth } from './auth';
 import { Chat } from './chat';
-
+import { auth } from './firebase';
+import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
+import 'react-toastify/dist/ReactToastify.css';
 export function App() {
-  const { auth } = initializeFirebase();
   const navigate = useNavigate();
   const [initialized, setInitialized] = useState<boolean>(false);
   const [currentUser, setCurrentUser] = useState<User | undefined>(undefined);
@@ -26,18 +27,21 @@ export function App() {
   }, []);
 
   return (
-    <>{initialized ? (
-      <Routes>
-        <Route path="/auth" element={<Auth />} />
-        <Route path="/chat" element={<Chat />} />
-        <Route path="*" element={
-          <div>
-            Not Found
-          </div>
-        } />
-      </Routes>
-    ) : (
-      <Loading />
-    )}</>
+    <>
+      {initialized ? (
+        <Routes>
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/chat" element={<Chat />} />
+          <Route path="*" element={
+            <div>
+              Not Found
+            </div>
+          } />
+        </Routes>
+      ) : (
+        <Loading />
+      )}
+      <ToastContainer />
+    </>
   );
 }

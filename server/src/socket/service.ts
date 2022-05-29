@@ -2,9 +2,9 @@ import { Server, Socket } from 'socket.io';
 import { GroupRepo } from '../groups';
 
 export class SocketService {
-  private io: Server;
-  private socket: Socket;
-  private groupRepo: GroupRepo;
+  public io: Server;
+  public socket: Socket;
+  public groupRepo: GroupRepo;
 
   constructor(io: Server, socket: Socket, groupRepo: GroupRepo) {
     this.io = io;

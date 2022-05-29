@@ -1,5 +1,7 @@
 import express from "express";
 import { createServer } from "http";
+import bodyParser from 'body-parser';
+import cors from 'cors';
 import { AuthController, AuthService } from './auth';
 import { initializeConfigs } from './configs';
 import { initializeFirebase } from './firebase';
@@ -37,6 +39,8 @@ import { UserRepo } from './users';
   const messageService = new MessageService(messageRepo);
 
   // Controller
+  app.use(bodyParser.json());
+  app.use(cors());
   app.get('/healthcheck', (_req, res) => {
     res.json({msg: `Hello world!!!`})
   })
