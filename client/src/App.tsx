@@ -6,7 +6,7 @@ import { ToastContainer } from 'react-toastify';
 import { Auth } from './auth';
 import { Chat } from './chat';
 import { auth } from './firebase';
-import { CurrentUserContextProvider } from './context';
+import { CurrentUserContextProvider, SocketContextProvider } from './context';
 import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -28,20 +28,22 @@ export function App() {
 
   return (
     <CurrentUserContextProvider>
-      {initialized ? (
-        <Routes>
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/chat" element={<Chat />} />
-          <Route path="*" element={
-            <div>
-              Not Found
-            </div>
-          } />
-        </Routes>
-      ) : (
-        <Loading />
-      )}
-      <ToastContainer />
+      <SocketContextProvider>
+        {initialized ? (
+          <Routes>
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/chat" element={<Chat />} />
+            <Route path="*" element={
+              <div>
+                Not Found
+              </div>
+            } />
+          </Routes>
+        ) : (
+          <Loading />
+        )}
+        <ToastContainer />
+      </SocketContextProvider>
     </CurrentUserContextProvider>
   );
 }
