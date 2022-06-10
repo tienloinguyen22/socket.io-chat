@@ -6,19 +6,19 @@ import { ToastContainer } from 'react-toastify';
 import { Auth } from './auth';
 import { Chat } from './chat';
 import { auth } from './firebase';
+import { CurrentUserContextProvider } from './context';
 import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import 'react-toastify/dist/ReactToastify.css';
+
 export function App() {
   const navigate = useNavigate();
   const [initialized, setInitialized] = useState<boolean>(false);
-  const [currentUser, setCurrentUser] = useState<User | undefined>(undefined);
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       setInitialized(true);
 
       if (user) {
-        setCurrentUser(user);
         navigate('/chat');
       } else {
         navigate('/auth');
@@ -27,7 +27,7 @@ export function App() {
   }, []);
 
   return (
-    <>
+    <CurrentUserContextProvider>
       {initialized ? (
         <Routes>
           <Route path="/auth" element={<Auth />} />
@@ -42,6 +42,6 @@ export function App() {
         <Loading />
       )}
       <ToastContainer />
-    </>
+    </CurrentUserContextProvider>
   );
 }
