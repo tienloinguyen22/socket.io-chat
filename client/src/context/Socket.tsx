@@ -1,4 +1,4 @@
-import { onAuthStateChanged, User } from 'firebase/auth';
+import { getIdToken, onAuthStateChanged, User } from 'firebase/auth';
 import React, { useContext, useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
 import { auth } from '../firebase';
@@ -14,9 +14,10 @@ export const SocketContextProvider = (props: { children?: any }): JSX.Element =>
   const [socket, setSocket] = useState<Socket | undefined>(undefined);
 
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, async (user) => {
       if (user) {
-        setSocket(initializeSocket());
+        const authToken = await getIdToken(user);
+        setSocket(initializeSocket({ authToken }));
       }
     });
   }, []);

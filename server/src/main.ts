@@ -50,12 +50,23 @@ import { UserRepo } from './users';
 
   // Socket
   const io = initializeSocket(configs, httpServer, redis, firebase, userRepo);
-  io.on("connection", (socket) => {
+  io.on("connection", async (socket) => {
     console.log(`New connection. Socket ID: ${socket.id}`);
 
-    // Joins all rooms
+    // Joins all rooms: All groups + User own room
+    const { ctx } = socket.request as any;
+    const userId = ctx.user._id;
+    const userGroups = await groupRepo.findAllByMemberId(userId);
+    const rooms = [
+      `users.${String(userId)}`,
+      ...userGroups.map((group) => `groups.${String(group._id)}`)
+    ]
+    rooms.forEach((room) => (io.of('/').adapter as any).remoteJoin(socket.id, room))
 
     // Handle events
+    socket.on('hello', (...args) => {
+      console.log('🚀 ~ file: main.ts ~ line 70 ~ socket.on ~ args', args);
+    });
   });
 
   httpServer.listen(configs.port, () => {
