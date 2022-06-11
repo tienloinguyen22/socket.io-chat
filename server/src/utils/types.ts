@@ -11,4 +11,5 @@ export interface IsAuditable {
 
 export interface Context {
   user?: User;
+  socketId?: string;
 }

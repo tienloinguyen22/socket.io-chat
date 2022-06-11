@@ -14,13 +14,34 @@ import {
   VideoCallButton,
   EllipsisButton,
   TypingIndicator,
-  MessageSeparator,
 } from "@chatscope/chat-ui-kit-react";
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { toast } from 'react-toastify';
+import { useSocket } from '../context';
 import defaultAvatar from '../static/default-avatar.jpg';
 import './Chat.css';
 
 export const Chat = (): JSX.Element => {
+  const socket = useSocket();
+  const [conversations, setConversations] = useState<any[]>([]);
+  const [selectedConversation, setSelectedConversation] = useState<any>();
+  const [msgInput, setMsgInput] = useState<string>('');
+
+  useEffect(() => {
+    socket?.emit('getConversations', (result: any) => {
+      if (!result.success) {
+        toast(result.message);
+      } else {
+        setConversations(result.data);
+      }
+    })
+  }, [socket?.id]);
+
+  const sendMsg = () => {
+    console.log('🚀 ~ file: Chat.tsx ~ line 29 ~ msgInput', msgInput);
+    setMsgInput('');
+  };
+
   const messages = useMemo(() => {
     return [
       {
@@ -52,62 +73,49 @@ export const Chat = (): JSX.Element => {
       <MainContainer responsive>                
           <Sidebar position="left" scrollable={false}>
             <Search placeholder="Search..." />
-            <ConversationList>                                                     
-              <Conversation name="Lilly" lastSenderName="Lilly" info="Yes i can do it for you">
-                <Avatar src={defaultAvatar} name="Lilly" status="available" />
-              </Conversation>
-
-              <Conversation name="Joe" lastSenderName="Joe" info="Yes i can do it for you">
-                <Avatar src={defaultAvatar} name="Joe" status="dnd" />
-              </Conversation>
-
-              <Conversation name="Emily" lastSenderName="Emily" info="Yes i can do it for you" unreadCnt={3}>
-                <Avatar src={defaultAvatar} name="Emily" status="available" />
-              </Conversation>
-
-              <Conversation name="Kai" lastSenderName="Kai" info="Yes i can do it for you" unreadDot>
-                <Avatar src={defaultAvatar} name="Kai" status="unavailable" />
-              </Conversation>
-
-              <Conversation name="Akane" lastSenderName="Akane" info="Yes i can do it for you">
-                <Avatar src={defaultAvatar} name="Akane" status="eager" />
-              </Conversation>
-
-              <Conversation name="Eliot" lastSenderName="Eliot" info="Yes i can do it for you">
-                <Avatar src={defaultAvatar} name="Eliot" status="away" />
-              </Conversation>
-
-              <Conversation name="Zoe" lastSenderName="Zoe" info="Yes i can do it for you">
-                <Avatar src={defaultAvatar} name="Zoe" status="dnd" />
-              </Conversation>
-
-              <Conversation name="Patrik" lastSenderName="Patrik" info="Yes i can do it for you">
-                <Avatar src={defaultAvatar} name="Patrik" status="invisible" />
-              </Conversation>                                 
+            <ConversationList>
+              {conversations.map((conversation) => {
+                return (
+                  <Conversation
+                    key={conversation._id}
+                    name={conversation.email}
+                    lastSenderName="Lilly" info="Yes i can do it for you"
+                    active={conversation._id === selectedConversation?._id}
+                    onClick={() => {
+                      setSelectedConversation(conversation);
+                      setMsgInput('');
+                    }}
+                  >
+                    <Avatar src={defaultAvatar} name={conversation.fullName} />
+                  </Conversation>
+                );
+              })}                                                
             </ConversationList>
           </Sidebar>
+          
+          {selectedConversation && (
+            <ChatContainer>
+              <ConversationHeader>
+                <ConversationHeader.Back />
+                <Avatar src={defaultAvatar} name={selectedConversation.email} />
+                <ConversationHeader.Content userName={selectedConversation.email} info="Active 10 mins ago" />
+              </ConversationHeader>
 
-          <ChatContainer>
-            <ConversationHeader>
-              <ConversationHeader.Back />
-              <Avatar src={defaultAvatar} name="Zoe" />
-              <ConversationHeader.Content userName="Zoe" info="Active 10 mins ago" />
-              <ConversationHeader.Actions>
-                <VoiceCallButton />
-                <VideoCallButton />
-                <EllipsisButton orientation="vertical" />
-              </ConversationHeader.Actions>          
-            </ConversationHeader>
-
-            <MessageList typingIndicator={<TypingIndicator content="Zoe is typing" />}>
-              {messages.map((msg) => (
-                <Message model={msg}>
-                  <Avatar src={defaultAvatar} name="Zoe" />
-                </Message>
-              ))}
-            </MessageList>
-            <MessageInput placeholder="Aa" />
-          </ChatContainer>                         
+              <MessageList>
+                {messages.map((msg, index) => (
+                  <Message key={index} model={msg}>
+                    <Avatar src={defaultAvatar} name="Zoe" />
+                  </Message>
+                ))}
+              </MessageList>
+              <MessageInput
+                placeholder="Aa"
+                value={msgInput}
+                onChange={(_: any, textContent: string) => setMsgInput(textContent)}
+                onSend={sendMsg}
+              />
+            </ChatContainer> 
+          )}
         </MainContainer>
     </div>
   );

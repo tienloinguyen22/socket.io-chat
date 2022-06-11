@@ -1,7 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
-import { Context } from 'vm';
 import { UserID } from '../users';
-import { addCreationInfo, addModificationInfo, ApiError } from '../utils';
+import { addCreationInfo, addModificationInfo, ApiError, Context } from '../utils';
 import { GroupRepo } from './repository';
 import { Group } from './types';
 

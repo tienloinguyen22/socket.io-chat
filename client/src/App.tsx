@@ -16,13 +16,12 @@ export function App() {
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
-      setInitialized(true);
-
       if (user) {
         navigate('/chat');
       } else {
         navigate('/auth');
       }
+      setInitialized(true);
     });
   }, []);
 

@@ -30,6 +30,10 @@ export class UserRepo {
     this.model = mongoose.model<User>('users', UserSchema);
   }
 
+  public async findAllExcepIds(exceptIds: string[]): Promise<User[]> {
+    return this.model.find({ _id: { $nin: exceptIds } }).lean();
+  }
+
   public async findById(id: string): Promise<User | null> {
     return this.model.findById(id).lean();
   }

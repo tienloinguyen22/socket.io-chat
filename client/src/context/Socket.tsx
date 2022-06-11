@@ -15,7 +15,7 @@ export const SocketContextProvider = (props: { children?: any }): JSX.Element =>
 
   useEffect(() => {
     onAuthStateChanged(auth, async (user) => {
-      if (user) {
+      if (user && !socket) {
         const authToken = await getIdToken(user);
         setSocket(initializeSocket({ authToken }));
       }
